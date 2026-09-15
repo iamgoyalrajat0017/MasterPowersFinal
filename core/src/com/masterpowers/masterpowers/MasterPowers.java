@@ -64,7 +64,7 @@ public class MasterPowers extends JavaPlugin {
 
 		new ConfigManager();
 		final boolean checkUpdateOnStartup = ConfigManager.getConfig().getBoolean("Properties.UpdateChecker");
-		this.updater = new Updater(this, "https://api.github.com/repos/iamgoyalrajat0017/MasterPowers-v2/releases/latest", checkUpdateOnStartup);
+		this.updater = new Updater(this, "https://api.github.com/repos/iamgoyalrajat0017/MasterPowersFinal/releases/latest", checkUpdateOnStartup);
 		new Commands(this);
 		new MultiAbilityManager();
 		new ComboManager();
