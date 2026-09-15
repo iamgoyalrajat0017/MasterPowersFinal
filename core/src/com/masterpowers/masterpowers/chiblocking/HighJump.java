@@ -1,0 +1,94 @@
+package com.masterpowers.masterpowers.chiblocking;
+
+import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
+
+import com.masterpowers.masterpowers.GeneralMethods;
+import com.masterpowers.masterpowers.MasterPowers;
+import com.masterpowers.masterpowers.ability.ChiAbility;
+import com.masterpowers.masterpowers.attribute.Attribute;
+import com.masterpowers.masterpowers.waterbending.multiabilities.WaterArmsWhip;
+
+public class HighJump extends ChiAbility {
+
+	@Attribute(Attribute.HEIGHT)
+	private int height;
+	@Attribute(Attribute.COOLDOWN)
+	private long cooldown;
+
+	public HighJump(final Player player) {
+		super(player);
+		if (!this.bPlayer.canBend(this)) {
+			return;
+		}
+		this.height = MasterPowers.plugin.getConfig().getInt("Abilities.Chi.HighJump.Height");
+		this.cooldown = MasterPowers.plugin.getConfig().getInt("Abilities.Chi.HighJump.Cooldown");
+		this.start();
+	}
+
+	private void jump(final Player p) {
+		if (!GeneralMethods.isSolid(p.getLocation().getBlock().getRelative(BlockFace.DOWN))) {
+			this.remove();
+			return;
+		}
+		final Vector vec = p.getVelocity();
+		vec.setY(this.height);
+		GeneralMethods.setVelocity(this, p, vec);
+		this.bPlayer.addCooldown(this);
+		return;
+	}
+
+	@Override
+	public void progress() {
+		if (this.bPlayer.isOnCooldown(this)) {
+			this.remove();
+			return;
+		}
+		this.jump(this.player);
+		final WaterArmsWhip waw = WaterArmsWhip.getGrabbedEntities().get(this.player);
+		if (waw != null) {
+			waw.setGrabbed(false);
+		}
+
+	}
+
+	@Override
+	public String getName() {
+		return "HighJump";
+	}
+
+	@Override
+	public Location getLocation() {
+		return this.player != null ? this.player.getLocation() : null;
+	}
+
+	@Override
+	public long getCooldown() {
+		return this.cooldown;
+	}
+
+	@Override
+	public boolean isSneakAbility() {
+		return false;
+	}
+
+	@Override
+	public boolean isHarmlessAbility() {
+		return true;
+	}
+
+	public int getHeight() {
+		return this.height;
+	}
+
+	public void setHeight(final int height) {
+		this.height = height;
+	}
+
+	public void setCooldown(final long cooldown) {
+		this.cooldown = cooldown;
+	}
+
+}
